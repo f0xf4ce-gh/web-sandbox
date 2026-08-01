@@ -1,0 +1,97 @@
+@font-face {
+  font-family: "Inter";
+  src: url("/fonts/inter-latin-400-normal.woff2") format("woff2");
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Inter";
+  src: url("/fonts/inter-latin-500-normal.woff2") format("woff2");
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "JetBrains Mono";
+  src: url("/fonts/jetbrains-mono-latin-400-normal.woff2") format("woff2");
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "JetBrains Mono";
+  src: url("/fonts/jetbrains-mono-latin-500-normal.woff2") format("woff2");
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+}
+
+:root {
+  --bg-base: #0A0A0A;
+  --bg-panel: #151515;
+  --bg-raised: #1D1D1D;
+  --bg-hover: #252525;
+  --bg-active: #2E2E2E;
+  --line: #2A2A2A;
+  --line-strong: #3A3A3A;
+  --text: #EDEDED;
+  --text-2: #9A9A9A;
+  --text-3: #6A6A6A;
+  --focus: rgba(255, 255, 255, 0.35);
+
+  /* Names retained from ui-base/Sandbox.dc.html for mergeability. */
+  --bg-window: var(--bg-base);
+  --bg-title: var(--bg-panel);
+  --bg-canvas: var(--bg-base);
+  --line-2: #202020;
+  --fg: var(--text);
+  --fg-2: var(--text-2);
+  --fg-3: var(--text-3);
+  --ctl: var(--bg-raised);
+  --ctl-hover: var(--bg-hover);
+  --ctl-line: var(--line);
+  --menu: var(--bg-raised);
+  --menu-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+  --ph: #202020;
+  --ph-2: #292929;
+
+  --font-ui: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Inter", system-ui, sans-serif;
+  --font-mono: ui-monospace, "SF Mono", Menlo, "JetBrains Mono", monospace;
+  --radius-control: 6px;
+  --radius-frame: 8px;
+  --radius-panel: 10px;
+  --ease-standard: cubic-bezier(0.2, 0, 0, 1);
+}
+
+:root[data-theme="light"] {
+  --bg-base: #F2F2F2;
+  --bg-panel: #FFFFFF;
+  --bg-raised: #FAFAFA;
+  --bg-hover: #EDEDED;
+  --bg-active: #E3E3E3;
+  --line: #DEDEDE;
+  --line-strong: #C6C6C6;
+  --text: #1D1D1D;
+  --text-2: #6E6E6E;
+  --text-3: #A1A1A1;
+  --focus: rgba(0, 0, 0, 0.3);
+
+  --bg-window: var(--bg-base);
+  --bg-title: var(--bg-panel);
+  --bg-canvas: var(--bg-base);
+  --line-2: #E7E7E7;
+  --fg: var(--text);
+  --fg-2: var(--text-2);
+  --fg-3: var(--text-3);
+  --ctl: var(--bg-raised);
+  --ctl-hover: var(--bg-hover);
+  --ctl-line: var(--line);
+  --menu: var(--bg-raised);
+  --menu-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+  --ph: #E7E7E7;
+  --ph-2: #D9D9D9;
+}

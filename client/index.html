@@ -1,0 +1,348 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, viewport-fit=cover, interactive-widget=resizes-content"
+    />
+    <meta name="theme-color" content="#0A0A0A" />
+    <meta name="description" content="A private dual-viewport web development sandbox." />
+    <link rel="manifest" href="/manifest.webmanifest" />
+    <title>Web dev sandbox</title>
+  </head>
+  <body>
+    <svg class="icon-sprite" aria-hidden="true">
+      <symbol id="icon-chevron" viewBox="0 0 16 16">
+        <path d="m4 6 4 4 4-4" />
+      </symbol>
+      <symbol id="icon-moon" viewBox="0 0 16 16">
+        <path d="M13.4 10.7A5.9 5.9 0 0 1 5.3 2.6a6.2 6.2 0 1 0 8.1 8.1Z" />
+      </symbol>
+      <symbol id="icon-sun" viewBox="0 0 16 16">
+        <circle cx="8" cy="8" r="2.7" />
+        <path d="M8 1.2v1.4M8 13.4v1.4M1.2 8h1.4M13.4 8h1.4M3.2 3.2l1 1M11.8 11.8l1 1M12.8 3.2l-1 1M4.2 11.8l-1 1" />
+      </symbol>
+      <symbol id="icon-settings" viewBox="0 0 16 16">
+        <circle cx="8" cy="8" r="2.1" />
+        <path d="M8 1.1v1.6M8 13.3v1.6M1.1 8h1.6M13.3 8h1.6M3.1 3.1l1.1 1.1M11.8 11.8l1.1 1.1M12.9 3.1l-1.1 1.1M4.2 11.8l-1.1 1.1" />
+      </symbol>
+      <symbol id="icon-terminal" viewBox="0 0 16 16">
+        <rect x="1.5" y="2.5" width="13" height="11" rx="1.5" />
+        <path d="m4.2 6 2 2-2 2M8.4 10h3.2" />
+      </symbol>
+      <symbol id="icon-viewer" viewBox="0 0 16 16">
+        <rect x="1.5" y="3" width="13" height="9" rx="1.2" />
+        <path d="M5.5 14h5M8 12v2" />
+      </symbol>
+      <symbol id="icon-console" viewBox="0 0 16 16">
+        <path d="M2 3.2h12v9.6H2zM4.2 6.1l1.5 1.5-1.5 1.5M7.6 9.1h3.2" />
+      </symbol>
+      <symbol id="icon-reload" viewBox="0 0 16 16">
+        <path d="M13.1 5.8A5.3 5.3 0 1 0 13.2 9" />
+        <path d="M13.1 2.8v3.6H9.5" />
+      </symbol>
+      <symbol id="icon-more" viewBox="0 0 16 16">
+        <circle cx="3.5" cy="8" r=".8" />
+        <circle cx="8" cy="8" r=".8" />
+        <circle cx="12.5" cy="8" r=".8" />
+      </symbol>
+      <symbol id="icon-rotate" viewBox="0 0 16 16">
+        <path d="M13.2 6.2A5.4 5.4 0 0 0 3.1 4.6L2 5.7M2 2.5v3.2h3.2M2.8 9.8a5.4 5.4 0 0 0 10.1 1.6l1.1-1.1M14 13.5v-3.2h-3.2" />
+      </symbol>
+      <symbol id="icon-link" viewBox="0 0 16 16">
+        <path d="M6.3 9.7 9.7 6.3M5.1 11.8H4a2.8 2.8 0 0 1 0-5.6h2M10.9 4.2H12a2.8 2.8 0 0 1 0 5.6h-2" />
+      </symbol>
+      <symbol id="icon-external" viewBox="0 0 16 16">
+        <path d="M9 2h5v5M14 2 7.7 8.3M12 9v4H2V3h4" />
+      </symbol>
+      <symbol id="icon-copy" viewBox="0 0 16 16">
+        <rect x="5" y="5" width="8" height="8" rx="1" />
+        <path d="M11 5V3H3v8h2" />
+      </symbol>
+      <symbol id="icon-info" viewBox="0 0 16 16">
+        <circle cx="8" cy="8" r="6" />
+        <path d="M8 7.1v4M8 4.8v.1" />
+      </symbol>
+      <symbol id="icon-qr" viewBox="0 0 16 16">
+        <path d="M2 2h5v5H2zM9 2h5v5H9zM2 9h5v5H2zM10 10h1M13 10h1M10 13h4M12 11v2" />
+      </symbol>
+      <symbol id="icon-collapse" viewBox="0 0 16 16">
+        <path d="m4 6 4 4 4-4" />
+      </symbol>
+    </svg>
+
+    <div class="app-shell" data-active-pane="viewer" data-console-collapsed="false">
+      <header class="titlebar">
+        <div class="titlebar-side titlebar-side-start">
+          <span class="project-mark" aria-hidden="true"></span>
+          <label class="project-selector">
+            <span class="sr-only">Project to preview</span>
+            <select class="control project-select" id="project-select" aria-label="Project to preview">
+              <option value="">Loading projects…</option>
+            </select>
+          </label>
+          <label class="source-selector">
+            <span class="sr-only">Preview source</span>
+            <select class="control source-select" id="source-select" aria-label="Preview source">
+              <option value="static">Files</option>
+              <option value="proxy">Port</option>
+            </select>
+          </label>
+          <label class="proxy-port-control" id="proxy-port-control" hidden>
+            <span class="sr-only">Local port</span>
+            <input class="control proxy-port" id="proxy-port" inputmode="numeric" pattern="[0-9]*" value="5173" aria-label="Local port" />
+          </label>
+          <span class="local-label"><span class="local-rule" aria-hidden="true"></span>local</span>
+        </div>
+
+        <div class="titlebar-center" aria-label="Viewer controls">
+          <label class="check-control compact-check">
+            <input id="block-external" type="checkbox" checked aria-label="Block external requests" />
+            <span>Block external requests</span>
+          </label>
+          <label class="check-control compact-check">
+            <input id="link-scroll" type="checkbox" aria-label="Link scroll" />
+            <span>Link scroll</span>
+          </label>
+          <button class="compact-button" id="preview-reload-all" type="button">
+            <svg class="icon icon-compact" aria-hidden="true"><use href="#icon-reload" /></svg>
+            <span>Reload both</span>
+          </button>
+        </div>
+
+        <div class="titlebar-side titlebar-side-end">
+          <span class="titlebar-status mono" id="app-status">ready</span>
+          <button class="control icon-button" id="theme-toggle" type="button" aria-label="Switch to light theme">
+            <svg class="icon" aria-hidden="true"><use href="#icon-moon" /></svg>
+          </button>
+          <button class="control icon-button" type="button" aria-label="Keyboard shortcuts" popovertarget="shortcuts-popover">
+            <svg class="icon" aria-hidden="true"><use href="#icon-settings" /></svg>
+          </button>
+          <div class="shortcuts-popover" id="shortcuts-popover" popover>
+            <p class="popover-title">Keyboard shortcuts</p>
+            <p><kbd>⌘1</kbd><span>Focus terminal</span></p>
+            <p><kbd>⌘2</kbd><span>Focus viewer</span></p>
+            <p><kbd>⌘3</kbd><span>Focus console</span></p>
+            <p><kbd>⌘R</kbd><span>Reload both</span></p>
+            <p><kbd>⌘\</kbd><span>Toggle console</span></p>
+            <p><kbd>⌘K</kbd><span>Clear console</span></p>
+          </div>
+        </div>
+      </header>
+
+      <main class="workspace-grid">
+        <section class="pane terminal-pane" data-pane="terminal" aria-labelledby="terminal-heading">
+          <div class="pane-header">
+            <div class="pane-heading">
+              <svg class="icon icon-small" aria-hidden="true"><use href="#icon-terminal" /></svg>
+              <h1 id="terminal-heading">Terminal</h1>
+            </div>
+            <span class="pane-meta mono" id="terminal-status">connecting</span>
+          </div>
+          <div class="terminal-surface" aria-label="Terminal output">
+            <div id="terminal-host" class="terminal-host"></div>
+          </div>
+          <div class="terminal-accessory" id="terminal-accessory" aria-label="Terminal accessory keys">
+            <button type="button" data-key="escape">Esc</button>
+            <button type="button" data-key="tab">Tab</button>
+            <button type="button" data-modifier="ctrl" aria-pressed="false">Ctrl</button>
+            <button type="button" data-modifier="alt" aria-pressed="false">Alt</button>
+            <button type="button" data-key="left" aria-label="Left arrow">←</button>
+            <button type="button" data-key="down" aria-label="Down arrow">↓</button>
+            <button type="button" data-key="up" aria-label="Up arrow">↑</button>
+            <button type="button" data-key="right" aria-label="Right arrow">→</button>
+            <button type="button" data-key="pipe" aria-label="Pipe">|</button>
+            <button type="button" data-key="slash" aria-label="Slash">/</button>
+            <button type="button" data-key="dash" aria-label="Dash">-</button>
+          </div>
+        </section>
+
+        <button class="split-divider split-divider-vertical" id="vertical-split" type="button" role="separator" aria-label="Resize terminal pane" aria-orientation="vertical"></button>
+
+        <div class="right-column">
+          <section class="pane viewer-pane" data-pane="viewer" aria-labelledby="viewer-heading">
+            <div class="pane-header viewer-header">
+              <div class="pane-heading">
+                <svg class="icon icon-small" aria-hidden="true"><use href="#icon-viewer" /></svg>
+                <h1 id="viewer-heading">Viewer</h1>
+              </div>
+              <div class="viewer-header-meta">
+                <span class="pane-meta" id="preview-status">loading</span>
+              </div>
+            </div>
+            <div class="viewer-surface" id="viewer-surface">
+              <div class="preview-grid" id="preview-grid">
+                <article class="frame-card" data-frame="desktop">
+                  <div class="frame-card-header">
+                    <div class="frame-title">
+                      <span class="frame-label">Desktop</span>
+                      <span class="frame-subtitle">width-based viewport</span>
+                    </div>
+                    <div class="frame-controls">
+                      <label class="size-editor">
+                        <span class="sr-only">Desktop frame size</span>
+                        <input id="desktop-size" type="text" value="1440 × 900" aria-label="Desktop frame size" spellcheck="false" />
+                      </label>
+                      <select class="compact-select" id="desktop-preset" aria-label="Desktop size preset">
+                        <option value="">Presets</option>
+                        <option value="1280x800">1280 × 800</option>
+                        <option value="1440x900">1440 × 900</option>
+                        <option value="1920x1080">1920 × 1080</option>
+                      </select>
+                      <details class="menu-details">
+                        <summary class="control icon-button" aria-label="Desktop frame actions">
+                          <svg class="icon" aria-hidden="true"><use href="#icon-more" /></svg>
+                        </summary>
+                        <div class="menu-popover" role="menu">
+                          <button type="button" data-frame-action="open" data-frame="desktop"><svg class="icon icon-compact" aria-hidden="true"><use href="#icon-external" /></svg>Open in a new tab</button>
+                          <button type="button" data-frame-action="copy" data-frame="desktop"><svg class="icon icon-compact" aria-hidden="true"><use href="#icon-copy" /></svg>Copy LAN URL</button>
+                          <button type="button" data-frame-action="qr" data-frame="desktop"><svg class="icon icon-compact" aria-hidden="true"><use href="#icon-qr" /></svg>Show QR code</button>
+                        </div>
+                      </details>
+                    </div>
+                  </div>
+                  <div class="frame-stage" id="desktop-stage">
+                    <div class="frame-holder" id="desktop-holder">
+                      <div class="frame-canvas" id="desktop-canvas">
+                        <iframe id="desktop-frame" title="Desktop preview" loading="eager"></iframe>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="measure-rule" id="desktop-measure" aria-label="Desktop viewport width">
+                    <span class="measure-line"></span>
+                    <span class="measure-tick measure-tick-start"></span>
+                    <span class="measure-tick measure-tick-end"></span>
+                    <span class="measure-label mono">1440 px</span>
+                  </div>
+                  <div class="frame-footer">
+                    <span class="pane-meta" id="desktop-frame-status">loading</span>
+                    <span class="pane-meta mono" id="desktop-overflow">—</span>
+                  </div>
+                </article>
+
+                <article class="frame-card" data-frame="mobile">
+                  <div class="frame-card-header">
+                    <div class="frame-title">
+                      <span class="frame-label">Mobile</span>
+                      <span class="frame-subtitle">width-based viewport</span>
+                    </div>
+                    <div class="frame-controls">
+                      <label class="size-editor">
+                        <span class="sr-only">Mobile frame size</span>
+                        <input id="mobile-size" type="text" value="390 × 844" aria-label="Mobile frame size" spellcheck="false" />
+                      </label>
+                      <select class="compact-select" id="mobile-preset" aria-label="Mobile size preset">
+                        <option value="">Presets</option>
+                        <option value="375x667">375 × 667</option>
+                        <option value="390x844">390 × 844</option>
+                        <option value="430x932">430 × 932</option>
+                        <option value="768x1024">768 × 1024</option>
+                      </select>
+                      <button class="control icon-button" type="button" id="mobile-rotate" aria-label="Rotate mobile frame">
+                        <svg class="icon" aria-hidden="true"><use href="#icon-rotate" /></svg>
+                      </button>
+                      <details class="menu-details">
+                        <summary class="control icon-button" aria-label="Mobile frame actions">
+                          <svg class="icon" aria-hidden="true"><use href="#icon-more" /></svg>
+                        </summary>
+                        <div class="menu-popover menu-popover-mobile" role="menu">
+                          <button type="button" data-frame-action="open" data-frame="mobile"><svg class="icon icon-compact" aria-hidden="true"><use href="#icon-external" /></svg>Open in a new tab</button>
+                          <button type="button" data-frame-action="copy" data-frame="mobile"><svg class="icon icon-compact" aria-hidden="true"><use href="#icon-copy" /></svg>Copy LAN URL</button>
+                          <button type="button" data-frame-action="qr" data-frame="mobile"><svg class="icon icon-compact" aria-hidden="true"><use href="#icon-qr" /></svg>Show QR code</button>
+                          <div class="menu-info">
+                            <svg class="icon icon-compact" aria-hidden="true"><use href="#icon-info" /></svg>
+                            <span>Only width media queries are emulated; use the QR code to test pointer, touch, pixel ratio, and user agent on real hardware.</span>
+                          </div>
+                        </div>
+                      </details>
+                    </div>
+                  </div>
+                  <div class="frame-stage" id="mobile-stage">
+                    <div class="frame-holder" id="mobile-holder">
+                      <div class="frame-canvas" id="mobile-canvas">
+                        <iframe id="mobile-frame" title="Mobile preview" loading="eager"></iframe>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="measure-rule" id="mobile-measure" aria-label="Mobile viewport width">
+                    <span class="measure-line"></span>
+                    <span class="measure-tick measure-tick-start"></span>
+                    <span class="measure-tick measure-tick-end"></span>
+                    <span class="measure-label mono">390 px</span>
+                  </div>
+                  <div class="frame-footer">
+                    <span class="pane-meta" id="mobile-frame-status">loading</span>
+                    <span class="pane-meta mono" id="mobile-overflow">—</span>
+                  </div>
+                </article>
+              </div>
+              <div class="preview-empty" id="preview-empty" hidden>
+                <p class="pane-empty-copy">No project directory yet.</p>
+                <p class="pane-empty-detail">Create one in /workspace from the terminal.</p>
+              </div>
+            </div>
+          </section>
+
+          <button class="split-divider split-divider-horizontal" id="horizontal-split" type="button" role="separator" aria-label="Resize console pane" aria-orientation="horizontal"></button>
+
+          <section class="pane console-pane" data-pane="console" aria-labelledby="console-heading">
+            <div class="pane-header console-header">
+              <div class="pane-heading">
+                <svg class="icon icon-small" aria-hidden="true"><use href="#icon-console" /></svg>
+                <h1 id="console-heading">Console</h1>
+                <span class="pane-meta" id="console-count">0 entries</span>
+              </div>
+              <div class="console-tools">
+                <div class="segmented" role="group" aria-label="Filter console levels">
+                  <button type="button" data-console-level="all" aria-pressed="true">All</button>
+                  <button type="button" data-console-level="log" aria-pressed="false">Log</button>
+                  <button type="button" data-console-level="info" aria-pressed="false">Info</button>
+                  <button type="button" data-console-level="warn" aria-pressed="false">Warn</button>
+                  <button type="button" data-console-level="error" aria-pressed="false">Error</button>
+                </div>
+                <div class="segmented frame-filter" role="group" aria-label="Filter console frames">
+                  <button type="button" data-console-frame="all" aria-pressed="true">Both</button>
+                  <button type="button" data-console-frame="desktop" aria-pressed="false">D</button>
+                  <button type="button" data-console-frame="mobile" aria-pressed="false">M</button>
+                </div>
+                <button class="compact-button" id="console-clear" type="button" disabled>Clear</button>
+                <button class="control icon-button console-collapse" id="console-collapse" type="button" aria-label="Collapse console" aria-expanded="true">
+                  <svg class="icon" aria-hidden="true"><use href="#icon-collapse" /></svg>
+                </button>
+              </div>
+            </div>
+            <div class="console-surface" id="console-surface">
+              <div class="console-empty" id="console-empty">
+                <div class="console-empty-mark" aria-hidden="true">—</div>
+                <p class="pane-empty-copy">Console output will appear here.</p>
+                <p class="pane-empty-detail">Logs from desktop and mobile share one timeline.</p>
+              </div>
+              <div class="console-list" id="console-list" role="log" aria-live="polite" aria-relevant="additions"></div>
+            </div>
+          </section>
+        </div>
+      </main>
+
+      <nav class="mobile-tabbar" aria-label="Sandbox panes">
+        <button class="mobile-tab" type="button" data-tab="terminal" aria-selected="false">Terminal</button>
+        <button class="mobile-tab" type="button" data-tab="viewer" aria-selected="true">Viewer</button>
+        <button class="mobile-tab" type="button" data-tab="console" aria-selected="false">Console</button>
+      </nav>
+    </div>
+
+    <dialog class="qr-dialog" id="qr-dialog" aria-labelledby="qr-title" aria-describedby="qr-caption">
+      <div class="qr-dialog-header">
+        <div>
+          <p class="popover-title" id="qr-title">Open on a device</p>
+          <p class="pane-empty-detail" id="qr-caption">Scan this local preview URL.</p>
+        </div>
+        <button class="control icon-button" id="qr-close" type="button" aria-label="Close QR code">×</button>
+      </div>
+      <div class="qr-code" id="qr-code"></div>
+      <p class="qr-url mono" id="qr-url"></p>
+    </dialog>
+
+    <script type="module" src="/main.ts"></script>
+  </body>
+</html>

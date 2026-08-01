@@ -1,0 +1,14 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "outDir": "dist-inject",
+    "rootDir": "inject",
+    "noEmit": false,
+    "declaration": false,
+    "sourceMap": false,
+    "types": ["vite/client"]
+  },
+  "include": ["inject/**/*.ts"]
+}

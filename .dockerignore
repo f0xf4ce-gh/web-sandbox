@@ -1,0 +1,7 @@
+.git
+.env
+caddy-root.crt
+dist
+node_modules
+ui-base
+*.log

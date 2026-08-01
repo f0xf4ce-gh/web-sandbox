@@ -1,0 +1,79 @@
+name: web-dev-sandbox
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    init: true
+    expose:
+      - "3000"
+    volumes:
+      - workspace:/workspace
+    mem_limit: 2g
+    pids_limit: 512
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges:true
+    networks:
+      - sandbox_internal
+    restart: unless-stopped
+
+  # This helper is intentionally the only app image service on a normal
+  # outbound bridge. Use it for an explicitly online npm install, then remove
+  # it when finished:
+  # docker compose --profile online run --rm app-online npm install <package>
+  app-online:
+    profiles:
+      - online
+    build:
+      context: .
+      dockerfile: Dockerfile
+    init: true
+    command:
+      - sleep
+      - infinity
+    working_dir: /workspace
+    user: "1000:1000"
+    volumes:
+      - workspace:/workspace
+    mem_limit: 2g
+    pids_limit: 512
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges:true
+    networks:
+      - sandbox_online
+
+  caddy:
+    image: caddy:2-alpine@sha256:5f5c8640aae01df9654968d946d8f1a56c497f1dd5c5cda4cf95ab7c14d58648
+    depends_on:
+      - app
+    environment:
+      - SANDBOX_HOST
+    ports:
+      - "443:443"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    networks:
+      - edge
+      - sandbox_internal
+    restart: unless-stopped
+
+networks:
+  sandbox_internal:
+    driver: bridge
+    internal: true
+  edge:
+    driver: bridge
+  sandbox_online:
+    driver: bridge
+
+volumes:
+  workspace:
+  caddy_data:
+  caddy_config:

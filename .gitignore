@@ -1,0 +1,7 @@
+node_modules/
+dist/
+dist-server/
+dist-inject/
+.env
+caddy-root.crt
+.DS_Store

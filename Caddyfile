@@ -1,0 +1,8 @@
+{
+    admin off
+}
+
+{$SANDBOX_HOST:localhost}:443 {
+    tls internal
+    reverse_proxy app:3000
+}
