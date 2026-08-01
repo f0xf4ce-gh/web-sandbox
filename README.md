@@ -1,108 +1,135 @@
 # Web dev sandbox
 
-This checkout is the complete private sandbox: a real tmux-backed terminal,
-simultaneous desktop and mobile previews, CSS hot swapping, console capture,
-scroll linking, a loopback port proxy, and a mobile-friendly PWA shell behind
-Caddy’s local TLS certificate.
+Self-hosted single-user environment for developing and testing HTML, CSS, and
+JavaScript projects in Docker.
 
-## Quick start
+The application provides:
 
-The easiest path is:
+- A real tmux-backed terminal with `nvim`, Git, and common shell tools.
+- Simultaneous desktop and mobile preview frames for the same project.
+- CSS hot swapping without reloading the page.
+- Full reloads for HTML and JavaScript changes.
+- A merged console for `console.*`, uncaught errors, and unhandled promises,
+  tagged by viewport.
+- Scroll-ratio linking between the two frames.
+- A loopback port proxy at `/p/:port/` for local development servers and HMR.
+- Local TLS through Caddy and a mobile PWA shell.
 
-~~~sh
+The runtime makes no requests outside the local machine. The default app
+container is attached to an internal Docker network. Dependencies are vendored
+in the image and the frontend is built with Vite during the image build.
+
+## Requirements
+
+- Docker Desktop or Docker Engine with Compose
+- Internet access for the first image build only
+
+After the image is built, the app can start and run without internet access.
+
+## Run
+
+From the repository root:
+
+```sh
 ./scripts/sandbox.sh build
 ./scripts/sandbox.sh start
 ./scripts/sandbox.sh check
 ./scripts/sandbox.sh demo
-~~~
+```
 
-Then open <https://localhost>. Caddy’s first certificate is private, so a
-browser will ask you to trust its local certificate. The helper uses `curl -k`
-for its local-only checks, but browsers and phones need the local CA trusted.
+Open [https://localhost](https://localhost). Caddy uses a local certificate;
+trust it in the browser when prompted. To export the local root certificate:
 
-For laptop or phone access, copy `.env.example` to `.env`, set
-`SANDBOX_HOST` to the hostname or VPN/LAN address you will use, and pass the
-same URL to the checker:
-
-~~~sh
-cp .env.example .env
-# edit SANDBOX_HOST in .env
-SANDBOX_URL=https://your-hostname ./scripts/sandbox.sh check
-~~~
-
-After code changes, rebuild the image and restart the app with:
-
-~~~sh
-./scripts/sandbox.sh rebuild
-~~~
-
-Useful commands:
-
-~~~sh
-./scripts/sandbox.sh status       # container state
-./scripts/sandbox.sh logs        # follow app and Caddy logs
-./scripts/sandbox.sh terminal    # send one command through the PTY websocket
-./scripts/sandbox.sh demo        # install the bundled preview-check project
-./scripts/sandbox.sh preview     # verify HTML injection and CSP
-./scripts/sandbox.sh proxy      # verify /p/5173/ through the single origin
-./scripts/sandbox.sh ca          # copy Caddy's local root certificate
-./scripts/sandbox.sh stop        # stop containers; keep the workspace volume
-~~~
-
-The `check` command validates the Compose file, starts the stack if needed,
-checks the HTTPS health route and session endpoint, confirms the app is
-running as uid 1000, and sends a harmless command through the real terminal
-websocket. `proxy` starts a disposable loopback HTTP fixture for ten seconds,
-checks it through Caddy, and lets it expire. Neither command deletes the
-workspace or its tmux session.
-
-For a quick direct check without the helper:
-
-~~~sh
-curl -k https://localhost/healthz
-~~~
-
-The response should be `ok`.
-
-To inspect the local CA that needs to be installed on a laptop or phone:
-
-~~~sh
+```sh
 ./scripts/sandbox.sh ca
-~~~
+```
 
-The default app is attached only to the internal Docker network. When a
-workspace dependency needs to be installed, run the dedicated online helper
-for that command and then remove it:
+The `demo` command copies `fixtures/preview-check/` into the persistent
+`/workspace` volume.
 
-~~~sh
-docker compose --profile online run --rm app-online npm install <package>
-~~~
+## Use
 
-The Docker socket is not mounted. No application code makes an external
-request. The first image build needs internet access to download the pinned
-base image and npm packages; once the image is built, `start`, `check`, and the
-running app do not need internet access.
+1. Select a project in the project menu.
+2. Use the terminal to edit files under `/workspace`, for example:
 
-The bundled `fixtures/preview-check/` project is only a test project. Install
-it into the workspace with `./scripts/sandbox.sh demo`, or create your own
-directory from the terminal. It is useful for testing CSS hot-swap without
-having to prepare a project first. Once it is installed, open the app, leave
-the project selected, type in the input in both frames, edit
-`/workspace/preview-check/style.css` from nvim, and confirm both borders change
-without losing the input values. Edit the HTML or JavaScript next to verify a
-full reload.
+   ```sh
+   nvim /workspace/preview-check/index.html
+   ```
 
-For the fastest final smoke pass:
+3. Use the viewer to inspect the desktop and mobile frames simultaneously.
+4. Edit CSS to test hot swapping and preserved form state.
+5. Edit HTML or JavaScript to test full reloads.
+6. Use the frame menu to copy a preview URL, open it in a new tab, or create a
+   QR code for a phone.
 
-~~~sh
-./scripts/sandbox.sh check
-./scripts/sandbox.sh demo
-./scripts/sandbox.sh preview
-./scripts/sandbox.sh proxy
-~~~
+To run a local development server inside the container, select `Port` as the
+preview source and enter its port, for example `5173`. The viewer uses the
+same-origin `/p/5173/` route, including WebSocket HMR traffic.
 
-The desktop app keeps both frames visible. On a phone, use the bottom tabs;
-the terminal tab adds Esc, Tab, Ctrl, Alt, and arrow keys above the keyboard.
-The mobile frame emulates width-based media queries only. Use its menu’s QR
-code to test touch, pointer, user agent, and device pixel ratio on real
-hardware.
+## Commands
+
+```sh
+./scripts/sandbox.sh build    # build the pinned Docker image
+./scripts/sandbox.sh rebuild  # build and recreate the running stack
+./scripts/sandbox.sh start    # start the stack
+./scripts/sandbox.sh check    # HTTPS, Compose, uid, and PTY checks
+./scripts/sandbox.sh demo     # install the bundled preview fixture
+./scripts/sandbox.sh preview  # injection and CSP checks
+./scripts/sandbox.sh proxy    # loopback port-proxy check
+./scripts/sandbox.sh terminal  # PTY websocket check
+./scripts/sandbox.sh status   # container status
+./scripts/sandbox.sh logs     # follow Compose logs
+./scripts/sandbox.sh ca       # export Caddy's local root certificate
+./scripts/sandbox.sh stop     # stop containers; keep the workspace volume
+```
+
+The smoke checks are safe to rerun. `check` does not delete the workspace or
+the tmux session. `proxy` starts a disposable loopback HTTP server and lets it
+expire after the check.
+
+## Laptop and phone access
+
+For access from another device, set the Caddy hostname in `.env`:
+
+```sh
+cp .env.example .env
+# Set SANDBOX_HOST to the machine hostname or VPN/LAN address.
+./scripts/sandbox.sh rebuild
+SANDBOX_URL=https://your-hostname ./scripts/sandbox.sh check
+```
+
+Install the certificate exported by `./scripts/sandbox.sh ca` on the laptop or
+phone, then open the configured HTTPS address. Firewall or VPN access remains
+the host's responsibility.
+
+## Online dependency installation
+
+The default app container has no outbound network. To install a workspace
+dependency, use the separate `online` Compose profile:
+
+```sh
+./scripts/sandbox.sh online npm install <package>
+```
+
+The Docker socket is never mounted. The workspace is a named volume owned by
+uid 1000 inside the app container.
+
+## Development
+
+Build the frontend, server, and injected preview client locally with:
+
+```sh
+npm ci
+npm run build
+```
+
+The main source directories are:
+
+```text
+client/    Vite frontend
+server/    Fastify service, PTY, preview, watcher, and proxy
+inject/    preview client injected into served HTML
+assets/    self-hosted fonts, icons, and PWA manifest
+ui-base/   source UI framework and design tokens
+fixtures/  bundled preview test project
+```
