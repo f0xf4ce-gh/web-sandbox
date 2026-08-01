@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet data-dc-atomics>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+--bg-window:#1b1b1d;--bg-title:#242426;--bg-panel:#161617;--bg-canvas:#0e0e0f;
+--line:rgba(255,255,255,.10);--line-2:rgba(255,255,255,.06);--line-strong:rgba(255,255,255,.26);
+--fg:#ededef;--fg-2:#9b9ba1;--fg-3:#65656a;
+--ctl:#2e2e30;--ctl-hover:#3a3a3c;--ctl-line:rgba(255,255,255,.13);
+--menu:#2c2c2e;--menu-shadow:0 10px 30px rgba(0,0,0,.55),0 0 0 1px rgba(255,255,255,.09);
+--ph:rgba(255,255,255,.07);--ph-2:rgba(255,255,255,.12);
+--s-d:.40;--s-m:.42;
+--seg-d-bg:var(--ctl-hover);--seg-d-fg:var(--fg);--seg-m-bg:var(--ctl-hover);--seg-m-fg:var(--fg);
+}
+:root[data-theme="light"]{
+--bg-window:#ffffff;--bg-title:#f0f0f2;--bg-panel:#fafafa;--bg-canvas:#e8e8ea;
+--line:rgba(0,0,0,.13);--line-2:rgba(0,0,0,.07);--line-strong:rgba(0,0,0,.42);
+--fg:#17171a;--fg-2:#6c6c72;--fg-3:#96969c;
+--ctl:#ffffff;--ctl-hover:#f0f0f2;--ctl-line:rgba(0,0,0,.16);
+--menu:#f7f7f8;--menu-shadow:0 10px 30px rgba(0,0,0,.18),0 0 0 1px rgba(0,0,0,.10);
+--ph:rgba(0,0,0,.06);--ph-2:rgba(0,0,0,.11);
+}
+html,body{margin:0;padding:0;height:100%;overflow:hidden;background:var(--bg-window)}
+*{box-sizing:border-box}
+a{color:var(--fg);text-decoration:none}
+a:hover{color:var(--fg-2)}
+@keyframes blink{0%,50%{opacity:1}50.01%,100%{opacity:0}}
+</style>
+</helmet>
+
+<div style="height:100vh;width:100vw;display:flex;flex-direction:column;background:var(--bg-window);color:var(--fg);font-family:Inter,system-ui,sans-serif;font-size:13px;font-weight:400;-webkit-font-smoothing:antialiased;overflow:hidden">
+
+  <div style="height:36px;flex:none;display:flex;align-items:center;justify-content:space-between;gap:16px;padding:0 12px;background:var(--bg-title);border-bottom:1px solid var(--line);position:relative;z-index:20">
+
+    <div style="display:flex;align-items:center;gap:8px;width:280px">
+      <div style="position:relative">
+        <div onClick="{{ toggleMenu }}" style="height:28px;display:flex;align-items:center;gap:8px;padding:0 8px 0 9px;border:1px solid var(--ctl-line);background:var(--ctl);border-radius:6px;cursor:default;user-select:none" style-hover="background:var(--ctl-hover)">
+          <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.1"><rect x="1" y="2.5" width="10" height="7.5" rx="1.2"></rect><path d="M1 4.6h10"></path></svg>
+          <span style="font-size:13px;letter-spacing:-.01em">atlas-web</span>
+          <svg width="9" height="9" viewBox="0 0 10 10" fill="none" stroke="var(--fg-2)" stroke-width="1.2" style="margin-left:2px"><path d="M2.2 4L5 6.6 7.8 4"></path></svg>
+        </div>
+        <sc-if value="{{ menuOpen }}" hint-placeholder-val="{{ false }}">
+          <div style="position:absolute;top:34px;left:0;width:232px;padding:4px;background:var(--menu);border-radius:8px;box-shadow:var(--menu-shadow);z-index:40">
+            <div style="padding:5px 8px 4px;font-size:11px;color:var(--fg-3)">Recent projects</div>
+            <div style="display:flex;align-items:center;justify-content:space-between;height:26px;padding:0 8px;border-radius:5px;background:var(--ctl-hover)"><span style="font-size:13px">atlas-web</span><span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--fg-2)">5173</span></div>
+            <div style="display:flex;align-items:center;justify-content:space-between;height:26px;padding:0 8px;border-radius:5px" style-hover="background:var(--ctl-hover)"><span style="font-size:13px;color:var(--fg-2)">docs-site</span><span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--fg-3)">5174</span></div>
+            <div style="display:flex;align-items:center;justify-content:space-between;height:26px;padding:0 8px;border-radius:5px" style-hover="background:var(--ctl-hover)"><span style="font-size:13px;color:var(--fg-2)">ui-kit</span><span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--fg-3)">idle</span></div>
+            <div style="height:1px;background:var(--line);margin:4px 6px"></div>
+            <div style="display:flex;align-items:center;height:26px;padding:0 8px;border-radius:5px;font-size:13px;color:var(--fg-2)" style-hover="background:var(--ctl-hover)">Open folder…</div>
+          </div>
+        </sc-if>
+      </div>
+      <div style="display:flex;align-items:center;gap:6px;padding-left:2px">
+        <div style="width:5px;height:5px;border-radius:50%;background:var(--fg-2)"></div>
+        <span style="font-size:11px;color:var(--fg-2)">Running</span>
+      </div>
+    </div>
+
+    <div style="display:flex;align-items:center;gap:8px">
+      <div onClick="{{ reload }}" style="width:28px;height:28px;display:flex;align-items:center;justify-content:center;border:1px solid var(--ctl-line);background:var(--ctl);border-radius:6px;cursor:default" style-hover="background:var(--ctl-hover)">
+        <svg ref="{{ refreshRef }}" width="13" height="13" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.15" stroke-linecap="round"><path d="M12 7a5 5 0 1 1-1.6-3.7"></path><path d="M12.2 1.6v2.6H9.6"></path></svg>
+      </div>
+      <div style="height:28px;display:flex;align-items:center;padding:2px;border:1px solid var(--ctl-line);background:var(--ctl);border-radius:6px">
+        <div onClick="{{ toggleD }}" style="height:22px;display:flex;align-items:center;gap:6px;padding:0 9px;border-radius:4px;cursor:default;font-size:12px;background:var(--seg-d-bg);color:var(--seg-d-fg)">
+          <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.1"><rect x=".8" y="2" width="10.4" height="7" rx="1"></rect><path d="M4 10.4h4"></path></svg>Desktop
+        </div>
+        <div style="width:1px;height:14px;background:var(--line)"></div>
+        <div onClick="{{ toggleM }}" style="height:22px;display:flex;align-items:center;gap:6px;padding:0 9px;border-radius:4px;cursor:default;font-size:12px;background:var(--seg-m-bg);color:var(--seg-m-fg)">
+          <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.1"><rect x="3.4" y=".9" width="5.2" height="10.2" rx="1.1"></rect></svg>Mobile
+        </div>
+      </div>
+      <div style="position:relative">
+        <div onClick="{{ toggleZoom }}" style="height:28px;display:flex;align-items:center;gap:7px;padding:0 9px;border:1px solid var(--ctl-line);background:var(--ctl);border-radius:6px;font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--fg-2);cursor:default" style-hover="background:var(--ctl-hover)">
+          <span>{{ zoomLabel }}</span><svg width="9" height="9" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.2"><path d="M2.2 4L5 6.6 7.8 4"></path></svg>
+        </div>
+        <sc-if value="{{ zoomOpen }}" hint-placeholder-val="{{ false }}">
+          <div style="position:absolute;top:34px;left:50%;transform:translateX(-50%);width:150px;padding:4px;background:var(--menu);border-radius:8px;box-shadow:var(--menu-shadow);z-index:40">
+            <div onClick="{{ setFit }}" style="display:flex;align-items:center;height:26px;padding:0 8px;border-radius:5px;font-size:13px" style-hover="background:var(--ctl-hover)">Fit to width</div>
+            <div style="height:1px;background:var(--line);margin:4px 6px"></div>
+            <div onClick="{{ set100 }}" style="display:flex;align-items:center;height:26px;padding:0 8px;border-radius:5px;font-size:13px" style-hover="background:var(--ctl-hover)">100 %</div>
+            <div onClick="{{ set75 }}" style="display:flex;align-items:center;height:26px;padding:0 8px;border-radius:5px;font-size:13px" style-hover="background:var(--ctl-hover)">75 %</div>
+            <div onClick="{{ set50 }}" style="display:flex;align-items:center;height:26px;padding:0 8px;border-radius:5px;font-size:13px" style-hover="background:var(--ctl-hover)">50 %</div>
+          </div>
+        </sc-if>
+      </div>
+    </div>
+
+    <div style="display:flex;align-items:center;justify-content:flex-end;gap:8px;width:280px">
+      <div onClick="{{ toggleTheme }}" style="width:28px;height:28px;display:flex;align-items:center;justify-content:center;border:1px solid var(--ctl-line);background:var(--ctl);border-radius:6px;cursor:default" style-hover="background:var(--ctl-hover)">
+        <svg width="13" height="13" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.15"><circle cx="7" cy="7" r="5.2"></circle><path d="M7 1.8a5.2 5.2 0 0 1 0 10.4z" fill="currentColor" stroke="none"></path></svg>
+      </div>
+      <div style="position:relative">
+        <div onClick="{{ toggleSettings }}" style="width:28px;height:28px;display:flex;align-items:center;justify-content:center;border:1px solid var(--ctl-line);background:var(--ctl);border-radius:6px;cursor:default" style-hover="background:var(--ctl-hover)">
+          <svg width="13" height="13" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.15"><circle cx="7" cy="7" r="2.1"></circle><path d="M7 .9v1.9M7 11.2v1.9M1.5 7h1.9M10.6 7h1.9M3.1 3.1l1.35 1.35M9.55 9.55l1.35 1.35M10.9 3.1L9.55 4.45M4.45 9.55L3.1 10.9"></path></svg>
+        </div>
+        <sc-if value="{{ settingsOpen }}" hint-placeholder-val="{{ false }}">
+          <div style="position:absolute;top:34px;right:0;width:236px;padding:4px;background:var(--menu);border-radius:8px;box-shadow:var(--menu-shadow);z-index:40">
+            <div style="padding:5px 8px 4px;font-size:11px;color:var(--fg-3)">Sandbox</div>
+            <div style="display:flex;align-items:center;justify-content:space-between;height:26px;padding:0 8px;border-radius:5px;font-size:13px" style-hover="background:var(--ctl-hover)"><span>Reload on save</span><span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--fg-2)">On</span></div>
+            <div style="display:flex;align-items:center;justify-content:space-between;height:26px;padding:0 8px;border-radius:5px;font-size:13px" style-hover="background:var(--ctl-hover)"><span>Sync scroll</span><span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--fg-2)">On</span></div>
+            <div style="display:flex;align-items:center;justify-content:space-between;height:26px;padding:0 8px;border-radius:5px;font-size:13px" style-hover="background:var(--ctl-hover)"><span>Throttle network</span><span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--fg-3)">Off</span></div>
+            <div style="height:1px;background:var(--line);margin:4px 6px"></div>
+            <div style="display:flex;align-items:center;justify-content:space-between;height:26px;padding:0 8px;border-radius:5px;font-size:13px;color:var(--fg-2)" style-hover="background:var(--ctl-hover)"><span>Server settings…</span><span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--fg-3)">⌘,</span></div>
+          </div>
+        </sc-if>
+      </div>
+    </div>
+  </div>
+
+  <div style="flex:1;display:flex;min-height:0">
+
+    <div style="width:38%;flex:none;display:flex;flex-direction:column;min-width:0;background:var(--bg-panel);border-right:1px solid var(--line)">
+      <div style="height:28px;flex:none;display:flex;align-items:center;justify-content:space-between;padding:0 12px 0 16px;border-bottom:1px solid var(--line)">
+        <span style="font-size:11px;font-weight:500;color:var(--fg-2)">Terminal</span>
+        <div style="display:flex;align-items:center;gap:12px">
+          <span style="font-family:'JetBrains Mono',monospace;font-size:10.5px;color:var(--fg-3)">zsh · node 22.4.0</span>
+          <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="var(--fg-2)" stroke-width="1.1"><rect x=".9" y="1.4" width="10.2" height="9.2" rx="1.2"></rect><path d="M6 1.4v9.2"></path></svg>
+          <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="var(--fg-2)" stroke-width="1.1"><path d="M2 6h8"></path></svg>
+        </div>
+      </div>
+      <div style="flex:1;min-height:0;overflow:auto;padding:12px 16px 16px;font-family:'JetBrains Mono',monospace;font-size:11.5px;line-height:1.85;color:var(--fg-2);white-space:pre;overflow-x:auto">
+<div style="color:var(--fg-3)">sandbox 0.9.4 — self-hosted · workspace ~/dev/atlas-web</div>
+<div style="height:12px"></div>
+<div><span style="color:var(--fg-3)">~/dev/atlas-web</span> <span style="color:var(--fg)">%</span> pnpm dev</div>
+<div style="height:6px"></div>
+<div><span style="color:var(--fg-3)">›</span>  watching   src/**/* · packages/ui/**/*</div>
+<div><span style="color:var(--fg-3)">›</span>  local      <span style="color:var(--fg)">http://127.0.0.1:5173</span></div>
+<div><span style="color:var(--fg-3)">›</span>  network    http://192.168.1.24:5173</div>
+<div style="height:6px"></div>
+<div style="color:var(--fg)">   ready in 412 ms</div>
+<div style="height:12px"></div>
+<div><span style="color:var(--fg-3)">12:04:31</span>  build   index.css          4.1 kb</div>
+<div><span style="color:var(--fg-3)">12:04:31</span>  build   app.js           128.9 kb</div>
+<div><span style="color:var(--fg-3)">12:04:31</span>  build   vendor.js        214.6 kb</div>
+<div><span style="color:var(--fg-3)">12:04:32</span>  serve   2 clients attached  <span style="color:var(--fg-3)">(D, M)</span></div>
+<div><span style="color:var(--fg-3)">12:04:44</span>  hmr     update  src/components/nav.tsx</div>
+<div><span style="color:var(--fg-3)">12:04:51</span>  hmr     update  src/components/list.tsx</div>
+<div><span style="color:var(--fg-3)">12:05:02</span>  warn    unused export  formatBytes</div>
+<div style="height:6px"></div>
+<div style="color:var(--fg-3)">           src/lib/fmt.ts:14:7</div>
+<div style="height:12px"></div>
+<div><span style="color:var(--fg-3)">~/dev/atlas-web</span> <span style="color:var(--fg)">%</span> <span style="display:inline-block;width:6.9px;height:14px;background:var(--fg);vertical-align:-3px;animation:blink 1.1s steps(1) infinite"></span></div>
+      </div>
+    </div>
+
+    <div style="flex:1;min-width:0;display:flex;flex-direction:column">
+
+      <div style="flex:1;min-height:0;display:flex;flex-direction:column;background:var(--bg-canvas)">
+        <div style="height:28px;flex:none;display:flex;align-items:center;gap:12px;padding:0 12px 0 16px;border-bottom:1px solid var(--line);background:var(--bg-panel)">
+          <span style="font-size:11px;font-weight:500;color:var(--fg-2);flex:none">Viewer</span>
+          <div style="flex:1;max-width:340px;height:18px;display:flex;align-items:center;gap:8px;padding:0 8px;border:1px solid var(--line);border-radius:6px;font-family:'JetBrains Mono',monospace;font-size:10.5px;color:var(--fg-2)">
+            <svg width="9" height="9" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.1"><rect x="2.4" y="4.4" width="5.2" height="4.2" rx=".8"></rect><path d="M3.6 4.4V3.1a1.4 1.4 0 0 1 2.8 0v1.3"></path></svg>
+            <span>127.0.0.1:5173</span>
+          </div>
+          <div style="flex:1"></div>
+          <span style="font-family:'JetBrains Mono',monospace;font-size:10.5px;color:var(--fg-3)">2 frames · fit to width</span>
+        </div>
+
+        <div ref="{{ stageRef }}" style="flex:1;min-height:0;display:flex;align-items:center;justify-content:center;gap:24px;padding:24px;overflow:auto">
+
+          <sc-if value="{{ showD }}" hint-placeholder-val="{{ true }}">
+          <div style="display:flex;flex-direction:column;gap:8px;width:calc(1440px * var(--s-d))">
+            <div style="display:flex;align-items:baseline;justify-content:space-between;padding:0 1px">
+              <span style="font-size:11px;color:var(--fg-2);white-space:nowrap">Desktop</span>
+            </div>
+            <div style="width:100%;height:calc(900px * var(--s-d));border:1px solid var(--line-strong);border-radius:8px;overflow:hidden;background:var(--bg-window)">
+              <div style="width:1440px;height:900px;transform:scale(var(--s-d));transform-origin:top left;background:var(--bg-window);color:var(--fg);display:flex;flex-direction:column">
+                <div style="height:88px;flex:none;display:flex;align-items:center;justify-content:space-between;padding:0 64px;border-bottom:1px solid var(--line)">
+                  <span style="font-size:26px;font-weight:500;letter-spacing:-.02em">Atlas</span>
+                  <div style="display:flex;gap:48px;font-size:20px;color:var(--fg-2)"><span>Product</span><span>Docs</span><span>Pricing</span><span>Changelog</span></div>
+                  <div style="height:48px;padding:0 28px;display:flex;align-items:center;border:1px solid var(--line-strong);border-radius:8px;font-size:20px">Get started</div>
+                </div>
+                <div style="padding:96px 64px 64px;display:flex;gap:64px;align-items:flex-start">
+                  <div style="flex:1">
+                    <div style="font-size:76px;line-height:1.05;font-weight:500;letter-spacing:-.035em;max-width:640px">Infrastructure for people who read the docs.</div>
+                    <div style="margin-top:32px;font-size:24px;line-height:1.5;color:var(--fg-2);max-width:520px">Deploy from a single binary. No agents, no sidecars, no dashboards you did not ask for.</div>
+                    <div style="margin-top:48px;display:flex;gap:16px">
+                      <div style="height:64px;padding:0 36px;display:flex;align-items:center;border-radius:8px;background:var(--ph-2);font-size:21px">Start free</div>
+                      <div style="height:64px;padding:0 36px;display:flex;align-items:center;border:1px solid var(--line-strong);border-radius:8px;font-size:21px;color:var(--fg-2)">Read the docs</div>
+                    </div>
+                  </div>
+                  <div style="width:480px;height:328px;border-radius:8px;background:var(--ph);border:1px solid var(--line)"></div>
+                </div>
+                <div style="padding:0 64px;display:grid;grid-template-columns:1fr 1fr 1fr;gap:32px">
+                  <div style="border-top:1px solid var(--line);padding-top:24px"><div style="width:100%;height:132px;border-radius:6px;background:var(--ph)"></div><div style="margin-top:20px;font-size:21px;font-weight:500">Single binary</div><div style="margin-top:10px;font-size:18px;color:var(--fg-2);line-height:1.5">Ships as one file with no runtime dependencies.</div></div>
+                  <div style="border-top:1px solid var(--line);padding-top:24px"><div style="width:100%;height:132px;border-radius:6px;background:var(--ph)"></div><div style="margin-top:20px;font-size:21px;font-weight:500">Local first</div><div style="margin-top:10px;font-size:18px;color:var(--fg-2);line-height:1.5">Everything runs on your own hardware.</div></div>
+                  <div style="border-top:1px solid var(--line);padding-top:24px"><div style="width:100%;height:132px;border-radius:6px;background:var(--ph)"></div><div style="margin-top:20px;font-size:21px;font-weight:500">Plain text</div><div style="margin-top:10px;font-size:18px;color:var(--fg-2);line-height:1.5">Configuration you can diff and review.</div></div>
+                </div>
+              </div>
+            </div>
+            <div style="position:relative;height:9px;width:100%;margin-top:8px">
+              <div style="position:absolute;left:0;top:0;width:1px;height:9px;background:var(--line-strong)"></div>
+              <div style="position:absolute;right:0;top:0;width:1px;height:9px;background:var(--line-strong)"></div>
+              <div style="position:absolute;left:0;right:0;top:4px;height:1px;background:var(--line-strong)"></div>
+              <div style="position:absolute;left:0;right:0;bottom:13px;display:flex;justify-content:center"><span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--fg-2);background:var(--bg-canvas);padding:0 8px">1440 px</span></div>
+            </div>
+          </div>
+          </sc-if>
+
+          <sc-if value="{{ showM }}" hint-placeholder-val="{{ true }}">
+          <div style="display:flex;flex-direction:column;gap:8px;width:calc(390px * var(--s-m))">
+            <div style="display:flex;align-items:baseline;justify-content:space-between;padding:0 1px">
+              <span style="font-size:11px;color:var(--fg-2);white-space:nowrap">Mobile</span>
+            </div>
+            <div style="width:100%;height:calc(844px * var(--s-m));border:1px solid var(--line-strong);border-radius:8px;overflow:hidden;background:var(--bg-window)">
+              <div style="width:390px;height:844px;transform:scale(var(--s-m));transform-origin:top left;background:var(--bg-window);color:var(--fg);display:flex;flex-direction:column">
+                <div style="height:56px;flex:none;display:flex;align-items:center;justify-content:space-between;padding:0 20px;border-bottom:1px solid var(--line)">
+                  <span style="font-size:17px;font-weight:500;letter-spacing:-.02em">Atlas</span>
+                  <div style="display:flex;flex-direction:column;gap:4px"><div style="width:18px;height:1px;background:var(--fg)"></div><div style="width:18px;height:1px;background:var(--fg)"></div></div>
+                </div>
+                <div style="padding:36px 20px 28px">
+                  <div style="font-size:34px;line-height:1.08;font-weight:500;letter-spacing:-.03em">Infrastructure for people who read the docs.</div>
+                  <div style="margin-top:16px;font-size:15px;line-height:1.5;color:var(--fg-2)">Deploy from a single binary. No agents, no sidecars.</div>
+                  <div style="margin-top:24px;display:flex;flex-direction:column;gap:10px">
+                    <div style="height:48px;display:flex;align-items:center;justify-content:center;border-radius:8px;background:var(--ph-2);font-size:15px">Start free</div>
+                    <div style="height:48px;display:flex;align-items:center;justify-content:center;border:1px solid var(--line-strong);border-radius:8px;font-size:15px;color:var(--fg-2)">Read the docs</div>
+                  </div>
+                </div>
+                <div style="padding:0 20px"><div style="width:100%;height:196px;border-radius:8px;background:var(--ph);border:1px solid var(--line)"></div></div>
+                <div style="padding:28px 20px 0;display:flex;flex-direction:column;gap:20px">
+                  <div style="border-top:1px solid var(--line);padding-top:16px"><div style="font-size:16px;font-weight:500">Single binary</div><div style="margin-top:6px;font-size:14px;color:var(--fg-2);line-height:1.5">Ships as one file with no runtime dependencies.</div></div>
+                  <div style="border-top:1px solid var(--line);padding-top:16px"><div style="font-size:16px;font-weight:500">Local first</div><div style="margin-top:6px;font-size:14px;color:var(--fg-2);line-height:1.5">Everything runs on your own hardware.</div></div>
+                  <div style="border-top:1px solid var(--line);padding-top:16px"><div style="font-size:16px;font-weight:500">Plain text</div><div style="margin-top:6px;font-size:14px;color:var(--fg-2);line-height:1.5">Configuration you can diff and review.</div></div>
+                </div>
+              </div>
+            </div>
+            <div style="position:relative;height:9px;width:100%;margin-top:8px">
+              <div style="position:absolute;left:0;top:0;width:1px;height:9px;background:var(--line-strong)"></div>
+              <div style="position:absolute;right:0;top:0;width:1px;height:9px;background:var(--line-strong)"></div>
+              <div style="position:absolute;left:0;right:0;top:4px;height:1px;background:var(--line-strong)"></div>
+              <div style="position:absolute;left:0;right:0;bottom:13px;display:flex;justify-content:center"><span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--fg-2);background:var(--bg-canvas);padding:0 6px">390 px</span></div>
+            </div>
+          </div>
+          </sc-if>
+
+        </div>
+      </div>
+
+      <div style="height:244px;flex:none;display:flex;flex-direction:column;background:var(--bg-panel);border-top:1px solid var(--line)">
+        <div style="height:28px;flex:none;display:flex;align-items:center;justify-content:space-between;padding:0 12px 0 16px;border-bottom:1px solid var(--line)">
+          <div style="display:flex;align-items:center;gap:16px">
+            <span style="font-size:11px;font-weight:500;color:var(--fg-2)">Console</span>
+            <div style="display:flex;align-items:center;gap:10px;font-family:'JetBrains Mono',monospace;font-size:10.5px;color:var(--fg-3)">
+              <span>10 entries</span><span style="width:1px;height:10px;background:var(--line)"></span><span>1 warning</span><span style="width:1px;height:10px;background:var(--line)"></span><span>1 error</span>
+            </div>
+          </div>
+          <div style="display:flex;align-items:center;gap:12px">
+            <span style="font-size:11px;color:var(--fg-2)">Both frames</span>
+            <span style="width:1px;height:12px;background:var(--line)"></span>
+            <span style="font-size:11px;color:var(--fg-2)">Clear</span>
+          </div>
+        </div>
+        <div style="flex:1;min-height:0;overflow:auto;font-family:'JetBrains Mono',monospace;font-size:11px">
+
+          <div style="display:grid;grid-template-columns:96px 18px 60px 1fr;gap:12px;align-items:center;padding:6px 16px;border-bottom:1px solid var(--line-2)"><span style="color:var(--fg-3)">12:04:32.118</span><span style="width:18px;height:18px;display:flex;align-items:center;justify-content:center;border:1px solid var(--line-strong);border-radius:3px;font-size:9.5px;color:var(--fg-2)">D</span><span style="color:var(--fg-2)">request</span><span style="color:var(--fg)">GET /  200  41 ms  ·  12.4 kb</span></div>
+          <div style="display:grid;grid-template-columns:96px 18px 60px 1fr;gap:12px;align-items:center;padding:6px 16px;border-bottom:1px solid var(--line-2)"><span style="color:var(--fg-3)">12:04:32.140</span><span style="width:18px;height:18px;display:flex;align-items:center;justify-content:center;border:1px solid var(--line-strong);border-radius:3px;font-size:9.5px;color:var(--fg-2)">D</span><span style="color:var(--fg-2)">socket</span><span style="color:var(--fg)">hmr client connected</span></div>
+          <div style="display:grid;grid-template-columns:96px 18px 60px 1fr;gap:12px;align-items:center;padding:6px 16px;border-bottom:1px solid var(--line-2)"><span style="color:var(--fg-3)">12:04:32.402</span><span style="width:18px;height:18px;display:flex;align-items:center;justify-content:center;border:1px solid var(--line-strong);border-radius:3px;font-size:9.5px;color:var(--fg-2)">M</span><span style="color:var(--fg-2)">request</span><span style="color:var(--fg)">GET /  200  38 ms  ·  12.4 kb</span></div>
+          <div style="display:grid;grid-template-columns:96px 18px 60px 1fr;gap:12px;align-items:center;padding:6px 16px;border-bottom:1px solid var(--line-2)"><span style="color:var(--fg-3)">12:04:33.006</span><span style="width:18px;height:18px;display:flex;align-items:center;justify-content:center;border:1px solid var(--line-strong);border-radius:3px;font-size:9.5px;color:var(--fg-2)">M</span><span style="color:var(--fg-2)">layout</span><span style="color:var(--fg)">viewport 390 × 844  ·  dpr 3</span></div>
+          <div style="display:grid;grid-template-columns:96px 18px 60px 1fr;gap:12px;align-items:center;padding:6px 16px;border-bottom:1px solid var(--line-2)"><span style="color:var(--fg-3)">12:04:41.771</span><span style="width:18px;height:18px;display:flex;align-items:center;justify-content:center;border:1px solid var(--line-strong);border-radius:3px;font-size:9.5px;color:var(--fg-2)">D</span><span style="color:var(--fg-2);font-weight:500">warn</span><span style="color:var(--fg)">image hero.avif is missing width and height</span></div>
+          <div style="display:grid;grid-template-columns:96px 18px 60px 1fr;gap:12px;align-items:center;padding:6px 16px;border-bottom:1px solid var(--line-2)"><span style="color:var(--fg-3)">12:04:44.219</span><span style="width:18px;height:18px;display:flex;align-items:center;justify-content:center;border:1px solid var(--line-strong);border-radius:3px;font-size:9.5px;color:var(--fg-2)">D</span><span style="color:var(--fg-2)">hmr</span><span style="color:var(--fg)">nav.tsx updated in 62 ms</span></div>
+          <div style="display:grid;grid-template-columns:96px 18px 60px 1fr;gap:12px;align-items:center;padding:6px 16px;border-bottom:1px solid var(--line-2)"><span style="color:var(--fg-3)">12:04:44.230</span><span style="width:18px;height:18px;display:flex;align-items:center;justify-content:center;border:1px solid var(--line-strong);border-radius:3px;font-size:9.5px;color:var(--fg-2)">M</span><span style="color:var(--fg-2)">hmr</span><span style="color:var(--fg)">nav.tsx updated in 58 ms</span></div>
+          <div style="display:grid;grid-template-columns:96px 18px 60px 1fr;gap:12px;align-items:center;padding:6px 16px;border-bottom:1px solid var(--line-2);background:var(--ph)"><span style="color:var(--fg-3)">12:04:51.004</span><span style="width:18px;height:18px;display:flex;align-items:center;justify-content:center;border:1px solid var(--fg);border-radius:3px;font-size:9.5px;color:var(--fg);font-weight:500">M</span><span style="color:var(--fg);font-weight:500">error</span><span style="color:var(--fg)">Uncaught TypeError: t.map is not a function</span></div>
+          <div style="display:grid;grid-template-columns:96px 18px 60px 1fr;gap:12px;align-items:center;padding:6px 16px;border-bottom:1px solid var(--line-2)"><span style="color:var(--fg-3)"></span><span></span><span style="color:var(--fg-3)">at</span><span style="color:var(--fg-2)">src/components/list.tsx:24:18</span></div>
+          <div style="display:grid;grid-template-columns:96px 18px 60px 1fr;gap:12px;align-items:center;padding:6px 16px;border-bottom:1px solid var(--line-2)"><span style="color:var(--fg-3)">12:05:02.331</span><span style="width:18px;height:18px;display:flex;align-items:center;justify-content:center;border:1px solid var(--line-strong);border-radius:3px;font-size:9.5px;color:var(--fg-2)">D</span><span style="color:var(--fg-2)">summary</span><span style="color:var(--fg)">4 requests  ·  173.2 kb transferred  ·  dom 289 ms</span></div>
+
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;theme&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;dark&quot;,&quot;light&quot;],&quot;default&quot;:&quot;dark&quot;,&quot;tsType&quot;:&quot;'dark'|'light'&quot;},&quot;showDesktop&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;},&quot;showMobile&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;}}">
+class Component extends DCLogic {
+  state = {
+    theme: this.props.theme || 'dark',
+    menuOpen: false,
+    settingsOpen: false,
+    zoomOpen: false,
+    zoom: 'fit',
+    showD: this.props.showDesktop !== false,
+    showM: this.props.showMobile !== false
+  };
+  stageRef = React.createRef();
+  refreshRef = React.createRef();
+
+  setZoom(z) {
+    this.setState({ zoom: z, zoomOpen: false }, () => this.fit());
+  }
+
+  componentDidMount() {
+    this.applyTheme();
+    this.applySeg();
+    this.ro = new ResizeObserver(() => this.fit());
+    if (this.stageRef.current) this.ro.observe(this.stageRef.current);
+    this.fit();
+    this.onDoc = () => {
+      if (this.state.menuOpen || this.state.settingsOpen || this.state.zoomOpen) this.setState({ menuOpen: false, settingsOpen: false, zoomOpen: false });
+    };
+    document.addEventListener('click', this.onDoc);
+  }
+  componentDidUpdate(p, s) {
+    if (s.theme !== this.state.theme) this.applyTheme();
+    if (s.showD !== this.state.showD || s.showM !== this.state.showM) this.fit();
+  }
+  componentWillUnmount() {
+    if (this.ro) this.ro.disconnect();
+    document.removeEventListener('click', this.onDoc);
+  }
+
+  applyTheme() {
+    const t = this.state.userTheme || this.props.theme || 'dark';
+    document.documentElement.setAttribute('data-theme', t);
+  }
+
+  applySeg() {
+    const r = document.documentElement;
+    r.style.setProperty('--seg-d-bg', this.state.showD ? 'var(--ctl-hover)' : 'transparent');
+    r.style.setProperty('--seg-d-fg', this.state.showD ? 'var(--fg)' : 'var(--fg-3)');
+    r.style.setProperty('--seg-m-bg', this.state.showM ? 'var(--ctl-hover)' : 'transparent');
+    r.style.setProperty('--seg-m-fg', this.state.showM ? 'var(--fg)' : 'var(--fg-3)');
+  }
+
+  fit() {
+    const el = this.stageRef.current;
+    if (!el) return;
+    const r0 = document.documentElement;
+    if (this.state.zoom !== 'fit') {
+      r0.style.setProperty('--s-d', String(this.state.zoom));
+      r0.style.setProperty('--s-m', String(this.state.zoom));
+      return;
+    }
+    const availW = el.clientWidth - 48;
+    const availH = el.clientHeight - 48 - 20 - 17; // label row + dimension rule
+    const { showD, showM } = this.state;
+    let h;
+    if (showD && showM) {
+      h = Math.min(availH, (availW - 24) / (1440 / 900 + 390 / 844));
+    } else if (showD) {
+      h = Math.min(availH, availW / (1440 / 900));
+    } else if (showM) {
+      h = Math.min(availH, availW / (390 / 844));
+    } else return;
+    const r = document.documentElement;
+    r.style.setProperty('--s-d', String(h / 900));
+    r.style.setProperty('--s-m', String(h / 844));
+  }
+
+  renderVals() {
+    this.applyTheme();
+    return {
+      stageRef: this.stageRef,
+      menuOpen: this.state.menuOpen,
+      settingsOpen: this.state.settingsOpen,
+      zoomOpen: this.state.zoomOpen,
+      zoomLabel: this.state.zoom === 'fit' ? 'Fit' : Math.round(this.state.zoom * 100) + ' %',
+      refreshRef: this.refreshRef,
+      toggleZoom: (e) => { e.stopPropagation(); this.setState(s => ({ zoomOpen: !s.zoomOpen, menuOpen: false, settingsOpen: false })); },
+      setFit: () => this.setZoom('fit'),
+      set100: () => this.setZoom(1),
+      set75: () => this.setZoom(0.75),
+      set50: () => this.setZoom(0.5),
+      toggleSettings: (e) => { e.stopPropagation(); this.setState(s => ({ settingsOpen: !s.settingsOpen, menuOpen: false, zoomOpen: false })); },
+      showD: this.state.showD,
+      showM: this.state.showM,
+      toggleMenu: (e) => { e.stopPropagation(); this.setState(s => ({ menuOpen: !s.menuOpen, settingsOpen: false, zoomOpen: false })); },
+      toggleTheme: () => this.setState(
+        s => ({ userTheme: (s.userTheme || this.props.theme || 'dark') === 'dark' ? 'light' : 'dark' }),
+        () => this.applyTheme()
+      ),
+      toggleD: () => this.setState(s => (s.showM ? { showD: !s.showD } : {}), () => { this.applySeg(); this.fit(); }),
+      toggleM: () => this.setState(s => (s.showD ? { showM: !s.showM } : {}), () => { this.applySeg(); this.fit(); }),
+      reload: () => {
+        const n = this.refreshRef.current;
+        if (n && n.animate) n.animate([{ transform: 'rotate(0deg)' }, { transform: 'rotate(360deg)' }], { duration: 520, easing: 'cubic-bezier(.4,0,.2,1)' });
+      }
+    };
+  }
+}
+</script>
+</body>
+</html>
